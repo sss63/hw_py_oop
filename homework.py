@@ -41,22 +41,14 @@ class CaloriesCalculator(Calculator):
 class CashCalculator(Calculator):
     USD_RATE = 73.51
     EUR_RATE = 89.14
-<<<<<<< HEAD
-    
-=======
->>>>>>> 0282b9294f3e40bb7aeb65c077a6e1df15a00336
 
     def __init__(self, limit):
         super().__init__(limit)
 
-<<<<<<< HEAD
     def get_today_cash_remained(self, currency='rub'):
         for record in super().records:
             print(record.amount)
             pass 
-=======
-    def get_today_cash_remained(currency):
->>>>>>> 0282b9294f3e40bb7aeb65c077a6e1df15a00336
         pass
         #«На сегодня осталось N руб/USD/Euro» — в случае, если лимит limit не достигнут,
         #или «Денег нет, держись», если лимит достигнут,
