@@ -32,7 +32,7 @@ class Record:
 
 # для CashCalculator 
 r1 = Record(amount=145, comment="Безудержный шопинг")
-r2 = Record(amount=1568, comment="Наполнение потребительской корзины", date="09.03.2019")
+r2 = Record(amount=1568, comment="Наполнение потребительской корзины", date="09-03-2019")
 r3 = Record(amount=691, comment="Катание на такси", date="08.03.2019")
 
 # для CaloriesCalculator
@@ -41,4 +41,5 @@ r5 = Record(amount=84, comment="Йогурт.", date="23.02.2019")
 r6 = Record(amount=1140, comment="Баночка чипсов.", date="24.02.2019")        
 
 
+print(r1.date)
 print(r2.date)
