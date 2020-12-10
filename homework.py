@@ -28,7 +28,6 @@ class Record:
         self.comment = comment
         self.date = date
         
-        pass
         
         
 # для CashCalculator 
