@@ -27,7 +27,9 @@ class Record:
         self.amount = amount
         self.comment = comment
         self.date = date
+        
         pass
+        
         
 # для CashCalculator 
 r1 = Record(amount=145, comment="Безудержный шопинг")
