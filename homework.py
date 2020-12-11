@@ -45,7 +45,7 @@ class CashCalculator(Calculator):
     def __init__(self, limit):
         super().__init__(limit)
 
-    def get_today_cash_remained(self, currency='rub'):
+    def get_today_cash_remained(self, currency):
         summ = 0
         for record in self.records:
             if record.date.date() == dt.datetime.today().date():
@@ -55,9 +55,14 @@ class CashCalculator(Calculator):
         
         if currency == 'usd':
             remain /= self.USD_RATE
+            currency = 'USD'          
         elif currency == 'eur':
             remain /= self.EUR_RATE
+            currency = 'Euro'          
+        else:
+            currency = 'руб.'          
             
+        remain = round(remain , 2)    
         if remain > 0:
             print(f"На сегодня осталось {remain} {currency}") 
         elif remain == 0:
@@ -96,6 +101,6 @@ cash_calculator.add_record(Record(amount=300, comment="Серёге за обе�
 # а тут пользователь указал дату, сохраняем её
 cash_calculator.add_record(Record(amount=3000, comment="бар в Танин др", date="08.11.2019"))
                 
-print(cash_calculator.get_today_cash_remained("eur"))
+print(cash_calculator.get_today_cash_remained("usdv"))
 # должно напечататься
 # На сегодня осталось 555 руб
