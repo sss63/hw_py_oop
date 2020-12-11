@@ -32,7 +32,7 @@ class CaloriesCalculator(Calculator):
     def __init__(self, limit):
         super().__init__(limit)        
         
-    def get_calories_remained():
+    def get_calories_remained(self):
         pass
 
 # Сегодня можно съесть что-нибудь ещё, но с общей калорийностью не более N кКал», если лимит limit не достигнут,
@@ -46,13 +46,25 @@ class CashCalculator(Calculator):
         super().__init__(limit)
 
     def get_today_cash_remained(self, currency='rub'):
-        for record in super().records:
-            print(record.amount)
-            pass 
-        pass
-        #«На сегодня осталось N руб/USD/Euro» — в случае, если лимит limit не достигнут,
-        #или «Денег нет, держись», если лимит достигнут,
-        #или «Денег нет, держись: твой долг - N руб/USD/Euro», 
+        summ = 0
+        for record in self.records:
+            if record.date.date() == dt.datetime.today().date():
+                summ += record.amount 
+
+        remain = self.limit - summ 
+        
+        if currency == 'usd':
+            remain /= self.USD_RATE
+        elif currency == 'eur':
+            remain /= self.EUR_RATE
+            
+        if remain > 0:
+            print(f"На сегодня осталось {remain} {currency}") 
+        elif remain == 0:
+            print('Денег нет, держись')
+        else:
+            remain *= -1
+            print(f'Денег нет, держись: твой долг - {remain} {currency}')
 
 
 
@@ -70,8 +82,7 @@ r5 = Record(amount=84, comment="Йогурт.", date="23.02.2019")
 r6 = Record(amount=1140, comment="Баночка чипсов.", date="24.02.2019")        
 
 
-print(r1.date)
-print(r2.date)
+ 
 
 
 # создадим калькулятор денег с дневным лимитом 1000
@@ -85,6 +96,6 @@ cash_calculator.add_record(Record(amount=300, comment="Серёге за обе�
 # а тут пользователь указал дату, сохраняем её
 cash_calculator.add_record(Record(amount=3000, comment="бар в Танин др", date="08.11.2019"))
                 
-print(cash_calculator.get_today_cash_remained("rub"))
+print(cash_calculator.get_today_cash_remained("eur"))
 # должно напечататься
 # На сегодня осталось 555 руб
