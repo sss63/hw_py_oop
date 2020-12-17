@@ -1,6 +1,8 @@
 import datetime as dt
 
-
+"""
+Класс 
+"""
 class Calculator:
     def __init__(self, limit):
         self.records = []
@@ -8,35 +10,53 @@ class Calculator:
 
     def add_record(self, record):
         self.records.append(record)
-        pass
+        
+    def get_today_stats(self):
+        """
+        подсчитывает суммарное количество amount в записях за текущий день
+        """
+        summ = 0
+        for record in self.records:
+            if record.date.date() == dt.datetime.today().date():
+                summ += record.amount 
 
-    def get_today_stats(self, parameter_list):
+        return self.limit - summ                
+
+    def get_week_stats(self):
         """
         docstring
         """
-        pass
-
-    def get_week_stats(self, parameter_list):
-        """
-        docstring
-        """
-        pass    
+        summ = 0
+        for record in self.records:
+            date_week_ago = dt.datetime.today().date() - dt.timedelta(days=7)
+            if record.date.date() > date_week_ago:
+                summ += record.amount 
+        return summ
     
 class Record:
     def __init__(self, amount, comment, date=dt.datetime.today().strftime('%d.%m.%Y')):
         self.amount = amount
         self.comment = comment
         self.date = dt.datetime.strptime(date, '%d.%m.%Y')
+
         
 class CaloriesCalculator(Calculator):
     def __init__(self, limit):
         super().__init__(limit)        
         
-    def get_calories_remained(self):
-        pass
+#    def x(self):
+#        return super().get_week_stats()
 
-# Сегодня можно съесть что-нибудь ещё, но с общей калорийностью не более N кКал», если лимит limit не достигнут,
-# или «Хватит есть!
+    def get_calories_remained(self):
+        balance = super().get_today_stats()
+
+        if balance > 0:
+            return (
+                "Сегодня можно съесть что-нибудь ещё, "
+                f"но с общей калорийностью не более {balance} кКал"
+            )
+        else:
+            return "Хватит есть!"
 
 class CashCalculator(Calculator):
     USD_RATE = 73.51
@@ -46,30 +66,25 @@ class CashCalculator(Calculator):
         super().__init__(limit)
 
     def get_today_cash_remained(self, currency):
-        summ = 0
-        for record in self.records:
-            if record.date.date() == dt.datetime.today().date():
-                summ += record.amount 
-
-        remain = self.limit - summ 
+        balance = super().get_today_stats()
         
         if currency == 'usd':
-            remain /= self.USD_RATE
+            balance /= self.USD_RATE
             currency = 'USD'          
         elif currency == 'eur':
-            remain /= self.EUR_RATE
+            balance /= self.EUR_RATE
             currency = 'Euro'          
         else:
             currency = 'руб.'          
             
-        remain = round(remain , 2)    
-        if remain > 0:
-            print(f"На сегодня осталось {remain} {currency}") 
-        elif remain == 0:
-            print('Денег нет, держись')
+        balance = round(balance , 2)    
+        if balance > 0:
+            return f"На сегодня осталось {balance} {currency}" 
+        elif balance == 0:
+            return 'Денег нет, держись'
         else:
-            remain *= -1
-            print(f'Денег нет, держись: твой долг - {remain} {currency}')
+            balance *= -1
+            return f'Денег нет, держись: твой долг - {balance} {currency}'
 
 
 
@@ -99,8 +114,27 @@ cash_calculator.add_record(Record(amount=145, comment="кофе"))
 # и к этой записи тоже дата должна добавиться автоматически
 cash_calculator.add_record(Record(amount=300, comment="Серёге за обед"))
 # а тут пользователь указал дату, сохраняем её
-cash_calculator.add_record(Record(amount=3000, comment="бар в Танин др", date="08.11.2019"))
+cash_calculator.add_record(Record(amount=3000, comment="бар в Танин др", date="11.12.2020"))
                 
 print(cash_calculator.get_today_cash_remained("usdv"))
 # должно напечататься
 # На сегодня осталось 555 руб
+
+
+# создадим калькулятор каллорий с дневным лимитом 1500
+calories_calculator = CaloriesCalculator(1500)
+        
+# дата в параметрах не указана, 
+# так что по умолчанию к записи должна автоматически добавиться сегодняшняя дата
+calories_calculator.add_record(Record(amount=1186, comment="Кусок тортика. И ещё один.")) 
+# и к этой записи тоже дата должна добавиться автоматически
+calories_calculator.add_record(Record(amount=84, comment="Йогурт."))
+# а тут пользователь указал дату, сохраняем её
+calories_calculator.add_record(Record(amount=1140, comment="Баночка чипсов.", date="12.12.2020"))
+                
+print(calories_calculator.get_calories_remained())
+# должно напечататься
+# Сегодня можно съесть что-нибудь ещё, но с общей калорийностью не более 230 кКал
+
+print(calories_calculator.get_week_stats())
+print(cash_calculator.get_week_stats())
