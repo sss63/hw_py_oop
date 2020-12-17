@@ -17,7 +17,7 @@ class Calculator:
         """
         summ = 0
         for record in self.records:
-            if record.date.date() == dt.datetime.today().date():
+            if record.date == dt.datetime.today():
                 summ += record.amount 
 
         return self.limit - summ                
@@ -28,7 +28,7 @@ class Calculator:
         """
         summ = 0
         for record in self.records:
-            date_week_ago = dt.datetime.today().date() - dt.timedelta(days=7)
+            date_week_ago = dt.datetime.today() - dt.timedelta(days=7)
             if record.date.date() > date_week_ago:
                 summ += record.amount 
         return summ
@@ -37,9 +37,11 @@ class Record:
     def __init__(self, amount, comment, date=dt.datetime.today().strftime('%d.%m.%Y')):
         self.amount = amount
         self.comment = comment
-        self.date = dt.datetime.strptime(date, '%d.%m.%Y')
+        self.date = dt.datetime.strptime(date, '%d.%m.%Y').date()
+        print(type(date), date) 
+        print(type(dt.datetime.today()), dt.datetime.today()) 
+        print(type(self.date), self.date)
 
-        
 class CaloriesCalculator(Calculator):
     def __init__(self, limit):
         super().__init__(limit)        
@@ -60,7 +62,7 @@ class CaloriesCalculator(Calculator):
 
 class CashCalculator(Calculator):
     USD_RATE = 73.51
-    EUR_RATE = 89.14
+    EURO_RATE = 89.14
 
     def __init__(self, limit):
         super().__init__(limit)
@@ -72,7 +74,7 @@ class CashCalculator(Calculator):
             balance /= self.USD_RATE
             currency = 'USD'          
         elif currency == 'eur':
-            balance /= self.EUR_RATE
+            balance /= self.EURO_RATE
             currency = 'Euro'          
         else:
             currency = 'руб.'          
