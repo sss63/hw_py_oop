@@ -94,7 +94,6 @@ class CashCalculator(Calculator):
         elif balance == 0:
             return 'Денег нет, держись'
         else:
-            #balance *= -1
             return f'Денег нет, держись: твой долг - {-balance} {currency}'
 
 
