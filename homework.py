@@ -26,12 +26,11 @@ class Calculator:
         """
         подсчитывает суммарное количество amount в записях за предыдущую неделю
         """
-        summ = 0
+        summ1 = 0
         for record in self.records:
-            date_week_ago = dt.date.today() - dt.timedelta(weeks=1)
-            if record.date >= date_week_ago:
-                summ += record.amount 
-        return summ
+            if dt.date.today() - record.date < dt.timedelta(weeks=1):
+                summ1 += record.amount 
+        return summ1
     
 """
 Класс Record - запись о событии. Трата ли денег, получение ли калорий.
@@ -86,15 +85,15 @@ class CashCalculator(Calculator):
             balance /= self.EURO_RATE
             currency = 'Euro'          
         else:
-            currency = 'руб.'          
+            currency = 'руб'          
             
         balance = round(balance , 2)    
         if balance > 0:
             return f"На сегодня осталось {balance} {currency}" 
         elif balance == 0:
-            return 'Денег нет, держись'
+            return "Денег нет, держись"
         else:
-            return f'Денег нет, держись: твой долг - {-balance} {currency}'
+            return f"Денег нет, держись: твой долг - {-balance} {currency}"
 
 
 
@@ -105,7 +104,7 @@ class CashCalculator(Calculator):
 
 
 # создадим калькулятор денег с дневным лимитом 1000
-cash_calculator = CashCalculator(1000)
+cash_calculator = CashCalculator(2500)
         
 # дата в параметрах не указана, 
 # так что по умолчанию к записи должна автоматически добавиться сегодняшняя дата
@@ -113,7 +112,7 @@ cash_calculator.add_record(Record(amount=145, comment="кофе"))
 # и к этой записи тоже дата должна добавиться автоматически
 cash_calculator.add_record(Record(amount=300, comment="Серёге за обед"))
 # а тут пользователь указал дату, сохраняем её
-cash_calculator.add_record(Record(amount=3000, comment="бар в Танин др", date="18.12.2020"))
+cash_calculator.add_record(Record(amount=3000, comment="бар в Танин др", date="10.12.2020"))
                 
 print(cash_calculator.get_today_cash_remained())
 # должно напечататься
@@ -129,11 +128,12 @@ calories_calculator.add_record(Record(amount=1186, comment="Кусок торт�
 # и к этой записи тоже дата должна добавиться автоматически
 calories_calculator.add_record(Record(amount=84, comment="Йогурт."))
 # а тут пользователь указал дату, сохраняем её
-calories_calculator.add_record(Record(amount=1140, comment="Баночка чипсов.", date="15.12.2020"))
+calories_calculator.add_record(Record(amount=1140, comment="Баночка чипсов.", date="10.12.2020"))
                 
 print(calories_calculator.get_calories_remained())
 # должно напечататься
 # Сегодня можно съесть что-нибудь ещё, но с общей калорийностью не более 230 кКал
 
-print(calories_calculator.get_week_stats())
 print(cash_calculator.get_week_stats())
+print(calories_calculator.get_week_stats())
+print(calories_calculator.get_today_stats())
