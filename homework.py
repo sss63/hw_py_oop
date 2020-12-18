@@ -1,7 +1,7 @@
 import datetime as dt
 
 """
-Класс 
+Класс Calculator 
 """
 class Calculator:
     def __init__(self, limit):
@@ -17,7 +17,7 @@ class Calculator:
         """
         summ = 0
         for record in self.records:
-            if record.date.date() == dt.datetime.today().date():
+            if record.date == dt.date.today():
                 summ += record.amount 
 
         return self.limit - summ                
@@ -28,16 +28,29 @@ class Calculator:
         """
         summ = 0
         for record in self.records:
-            date_week_ago = dt.datetime.today().date() - dt.timedelta(days=7)
-            if record.date.date() > date_week_ago:
+            date_week_ago = dt.date.today() - dt.timedelta(days=7)
+            if record.date > date_week_ago:
                 summ += record.amount 
         return summ
     
+"""
+Класс Record - запись о событии. Трата ли денег, получение ли калорий.
+"""
 class Record:
-    def __init__(self, amount, comment, date=dt.datetime.today().strftime('%d.%m.%Y')):
+    def __init__(self, amount, comment, date=''):
+        """
+        Конструктор класса получает три параметра и присваивает их в своим аргументам
+        """
         self.amount = amount
         self.comment = comment
-        self.date = dt.datetime.strptime(date, '%d.%m.%Y')
+        if date == '':
+            self.date = dt.date.today()
+        else:
+            self.date = dt.datetime.strptime(date, '%d.%m.%Y')
+
+        print(type(date), date) 
+        #print(type(dt.datetime.now()), dt.datetime.now()) 
+        print(type(self.date), self.date)
 
         
 class CaloriesCalculator(Calculator):
@@ -60,19 +73,18 @@ class CaloriesCalculator(Calculator):
 
 class CashCalculator(Calculator):
     USD_RATE = 73.51
-    EUR_RATE = 89.14
+    EURO_RATE = 89.14
 
     def __init__(self, limit):
         super().__init__(limit)
 
     def get_today_cash_remained(self, currency):
         balance = super().get_today_stats()
-        
         if currency == 'usd':
             balance /= self.USD_RATE
             currency = 'USD'          
         elif currency == 'eur':
-            balance /= self.EUR_RATE
+            balance /= self.EURO_RATE
             currency = 'Euro'          
         else:
             currency = 'руб.'          
@@ -93,13 +105,13 @@ class CashCalculator(Calculator):
 
 # для CashCalculator 
 r1 = Record(amount=145, comment="Безудержный шопинг")
-r2 = Record(amount=1568, comment="Наполнение потребительской корзины", date="09.03.2019")
-r3 = Record(amount=691, comment="Катание на такси", date="08.03.2019")
+#r2 = Record(amount=1568, comment="Наполнение потребительской корзины", date="09.03.2019")
+#r3 = Record(amount=691, comment="Катание на такси", date="08.03.2019")
 
 # для CaloriesCalculator
-r4 = Record(amount=1186, comment="Кусок тортика. И ещё один.", date="24.02.2019")
-r5 = Record(amount=84, comment="Йогурт.", date="23.02.2019")
-r6 = Record(amount=1140, comment="Баночка чипсов.", date="24.02.2019")        
+#r4 = Record(amount=1186, comment="Кусок тортика. И ещё один.", date="24.02.2019")
+#r5 = Record(amount=84, comment="Йогурт.", date="23.02.2019")
+#r6 = Record(amount=1140, comment="Баночка чипсов.", date="24.02.2019")        
 
 
  
@@ -114,7 +126,7 @@ cash_calculator.add_record(Record(amount=145, comment="кофе"))
 # и к этой записи тоже дата должна добавиться автоматически
 cash_calculator.add_record(Record(amount=300, comment="Серёге за обед"))
 # а тут пользователь указал дату, сохраняем её
-cash_calculator.add_record(Record(amount=3000, comment="бар в Танин др", date="11.12.2020"))
+#cash_calculator.add_record(Record(amount=3000, comment="бар в Танин др", date="11.12.2020"))
                 
 print(cash_calculator.get_today_cash_remained("usdv"))
 # должно напечататься
@@ -130,7 +142,7 @@ calories_calculator.add_record(Record(amount=1186, comment="Кусок торт�
 # и к этой записи тоже дата должна добавиться автоматически
 calories_calculator.add_record(Record(amount=84, comment="Йогурт."))
 # а тут пользователь указал дату, сохраняем её
-calories_calculator.add_record(Record(amount=1140, comment="Баночка чипсов.", date="12.12.2020"))
+#calories_calculator.add_record(Record(amount=1140, comment="Баночка чипсов.", date="12.12.2020"))
                 
 print(calories_calculator.get_calories_remained())
 # должно напечататься
